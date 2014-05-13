@@ -1,10 +1,15 @@
 package fr.aid.util;
 
 import java.awt.Color;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Base64;
 import java.util.UUID;
+import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
@@ -16,6 +21,30 @@ import javax.swing.JRadioButton;
  **/
 public class Outils
 {
+	/**
+	 * Transforme une String Base64 représentant une image en une BufferedImage
+	 *
+	 * @param imageString {String}: la chaîne de caractère Base64 de l'image à décoder
+	 * @return {BufferedImage} le buffer de l'image décodée depuis la String en entrée
+	 **/
+	public static BufferedImage base64StringToImage(String imageString)
+	{
+
+		BufferedImage image = null;
+		byte[] imageByte;
+		try
+		{
+			imageByte = Base64.getDecoder().decode(imageString);
+			ByteArrayInputStream bis = new ByteArrayInputStream(imageByte);
+			image = ImageIO.read(bis);
+			bis.close();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return image;
+	}
 
 	/**
 	 * Fonction qui permet de quitter l'application complète, avec ou sans vérification auprès de l'utilisateur
@@ -175,6 +204,34 @@ public class Outils
 			return true;
 		else
 			return false;
+	}
+
+	/**
+	 * Transforme un BufferedImage en String sous forme Base64
+	 *
+	 * @param image {BuffuredImage}: Le buffer de l'image a transformer en String base64
+	 * @param type {String}: La String décrivant le type d'image (jpeg, png, tiff, gif...)
+	 * @return
+	 **/
+	public static String imageToBase64String(BufferedImage image, String type)
+	{
+		String imageString = null;
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
+		try
+		{
+			ImageIO.write(image, type, bos);
+			byte[] imageBytes = bos.toByteArray();
+
+			imageString = Base64.getEncoder().encodeToString(imageBytes);
+
+			bos.close();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		return imageString;
 	}
 
 	/**
