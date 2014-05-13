@@ -18,33 +18,6 @@ public class Outils
 {
 
 	/**
-	* Transformation d'un UUID en un tableau d'octets (Byte Array)
-	* @see http://stackoverflow.com/questions/772802/storing-uuid-as-base64-string
-	*
-	* @param uuid {UUID}: l'UUID (Unique User Id) à transformer en un byte array
-	* @return {byte []} le tableau d'octet issu de l'UUID reçu en entrée
-	**/
-	public static byte[] uuidAsByteArray(UUID uuid)
-	{
-
-		long msb = uuid.getMostSignificantBits();
-		long lsb = uuid.getLeastSignificantBits();
-		byte[] buffer = new byte[16];
-
-		for (int i = 0; i < 8; i++ )
-		{
-			buffer[i] = (byte) (msb >>> 8 * (7 - i));
-		}
-		for (int i = 8; i < 16; i++ )
-		{
-			buffer[i] = (byte) (lsb >>> 8 * (7 - i));
-		}
-
-		return buffer;
-
-	}
-
-	/**
 	 * Fonction qui permet de quitter l'application complète, avec ou sans vérification auprès de l'utilisateur
 	 *
 	 * @param confirm {boolean} : <code>true</code> pour avoir une confirmation utilisateur, <code>false</code> sinon
@@ -58,6 +31,27 @@ public class Outils
 			quit = 0; // Quitter sans confirmation
 		if (quit == 0)
 			System.exit(0);
+	}
+
+	/**
+	 * Transformation d'un tableau d'octets (Byte Array) en un UUID
+	 * @see http://stackoverflow.com/questions/772802/storing-uuid-as-base64-string
+	 *
+	 * @param {byte []} : le byte array à transformer en UUID (Unique User Id)
+	 * @return {UUID} l'UUID issu du tableau d'octet reçu en entrée
+	 **/
+	public static UUID byteArrayAsUuid(byte[] byteArray)
+	{
+
+		long msb = 0;
+		long lsb = 0;
+		for (int i = 0; i < 8; i++ )
+			msb = (msb << 8) | (byteArray[i] & 0xff);
+		for (int i = 8; i < 16; i++ )
+			lsb = (lsb << 8) | (byteArray[i] & 0xff);
+		UUID result = new UUID(msb, lsb);
+
+		return result;
 	}
 
 	/**
@@ -236,23 +230,30 @@ public class Outils
 	}
 
 	/**
-	* Transformation d'un tableau d'octets (Byte Array) en un UUID
-	* @see http://stackoverflow.com/questions/772802/storing-uuid-as-base64-string
-	*
-	* @param {byte []} : le byte array à transformer en UUID (Unique User Id)
-	* @return {UUID} l'UUID issu du tableau d'octet reçu en entrée
-	**/
-	public static UUID byteArrayAsUuid(byte[] byteArray)
+	 * Transformation d'un UUID en un tableau d'octets (Byte Array)
+	 * @see http://stackoverflow.com/questions/772802/storing-uuid-as-base64-string
+	 *
+	 * @param uuid {UUID}: l'UUID (Unique User Id) à transformer en un byte array
+	 * @return {byte []} le tableau d'octet issu de l'UUID reçu en entrée
+	 * @see http://stackoverflow.com/questions/772802/storing-uuid-as-base64-string
+	 **/
+	public static byte[] uuidAsByteArray(UUID uuid)
 	{
 
-		long msb = 0;
-		long lsb = 0;
-		for (int i = 0; i < 8; i++ )
-			msb = (msb << 8) | (byteArray[i] & 0xff);
-		for (int i = 8; i < 16; i++ )
-			lsb = (lsb << 8) | (byteArray[i] & 0xff);
-		UUID result = new UUID(msb, lsb);
+		long msb = uuid.getMostSignificantBits();
+		long lsb = uuid.getLeastSignificantBits();
+		byte[] buffer = new byte[16];
 
-		return result;
+		for (int i = 0; i < 8; i++ )
+		{
+			buffer[i] = (byte) (msb >>> 8 * (7 - i));
+		}
+		for (int i = 8; i < 16; i++ )
+		{
+			buffer[i] = (byte) (lsb >>> 8 * (7 - i));
+		}
+
+		return buffer;
+
 	}
 }
