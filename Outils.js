@@ -1,49 +1,49 @@
 /**
 * Function useful to know what is the real type of an object.
 * 
-* @param obj
-*          {Object}: The Object for which one you want to identify the type
+* @param obj {Object}: The Object for which one you want to identify the type
 **/
 function realTypeOf(obj)
 {
 	try
 	{
-		return Object.prototype.toString.apply(obj).substring(8, val.indexOf(']')); // Transform "[object typeName]" in "typeName"
+		return Object.prototype.toString.apply(obj).substring(8, Object.prototype.toString.apply(obj).indexOf(']')); // Transform "[object typeName]" in "typeName"
 	}
 	catch (e)
 	{
 		console.error(e);
 		return 'Undefined';
 	}
-};
+}
 
 /**
 * A function useful to check if the element in entry is: empty, <code>null</code> or <code>undefined</code>
 * 
-* @param value
-* 			 {String} || {Object}: The element to check
+* @param value {String} || {Object}: The element to check
+* @param strict {Boolean}: indicate if the object can be empty. Only available for "pure" object detection. True by default
 * @returns {Boolean}: The value indicate if the input element is empty or not.
 **/
-function isDefined(value)
+function isDefined(value, strict)
 {
-	try
-	{
-		if ('Object' === realTypeOf(value))
-			if (0 === Object.keys(value).length)
-				return false;
-	}
-	catch (e)
-	{
-		return false;
-	}
+	strict = ('Boolean' === realTypeOf(strict)) ? strict : true;
+	if (true === strict)
+		try
+		{
+			if ('Object' === realTypeOf(value))
+				if (0 === Object.keys(value).length)
+					return false;
+		}
+		catch (e)
+		{
+			return false;
+		}
 	return !('String' === realTypeOf(value) && '' === value || 'Null' === realTypeOf(value) || 'Undefined' === realTypeOf(value));
-};
+}
 
 /**
 * A function useful to check if the element in entry is an integer
 * 
-* @param value
-* 			 {Number} || {Object}: The element to check
+* @param value {Number} || {Object}: The element to check
 * @returns {Boolean}: The value indicate if the input element is an integer or not.
 **/
 function isInt(val)
@@ -54,20 +54,19 @@ function isInt(val)
 /**
 * A function useful to check if the element in entry is an integer
 * 
-* @param value
-* 			 {Number} || {Object}: The element to check
+* @param value {Number} || {Object}: The element to check
 * @returns {Boolean}: The value indicate if the input element is an integer or not.
 **/
 function isFloat(val)
 {
 	return isDefined(parseFloat(val)) && !isNaN(parseFloat(val));
-};
+}
 
 /**
 * A function useful to know if the parameter <code>obj</code> is well of the type passed as string in <code>typeName</code> argument.
 * 
-* @param obj {Object} : The object to test
-* @param typeName {String} : The string giving the exact name of the type wanted for the object (not case sensitive)
+* @param obj {Object}: The object to test
+* @param typeName {String}: The string giving the exact name of the type wanted for the object (not case sensitive)
 * @return {boolean} <code>true</code> if the type are in agreement with the <code>typeName</code> argument, <code>else</code> otherwise. But the function will break if  <code>typeName</code> argument is not a String !
 **/
 function typeVerificator(obj, typeName)
@@ -76,7 +75,7 @@ function typeVerificator(obj, typeName)
 		return typeName.toLowerCase() === realTypeOf(obj).toLowerCase();
 	else
 		throw new TypeError('typeName must be a String !');
-};
+}
 
 /**
 * Function to know if the Local Storage is defined for this browser 
@@ -88,7 +87,7 @@ function LSDefinied()
 	var res;
 	try
 	{
-		res = typeof localStorage != 'undefined'
+		res = typeof localStorage !== 'undefined';
 	}
 	catch (e)
 	{
@@ -104,23 +103,23 @@ function LSDefinied()
 *
 * @see <a href='http://www.w3.org/TR/webstorage/#the-localstorage-attribute'>W3C doc for Local Storage</a>
 *
-* @param name {String} || {Array&lt;String&gt;} : a string or an array of string which contains the Local Storage's name(s) to get
+* @param name {String} || {Array&lt;String&gt;}: a string or an array of string which contains the Local Storage's name(s) to get
 * @returns {String} || {Array&lt;String&gt;} a string or an array of string containing the string stored in the Local Storage. If the item <code>name</code> does not exists in the Local Storage, the result will be <code>null</code>.
 **/
 function getItemFromLS(name)
 {
-	var LSResult = new Array(), isString = realTypeOf(name) == 'String';
-	if (realTypeOf(name) == 'Array')
+	var LSResult = [], isString = realTypeOf(name) === 'String';
+	if (realTypeOf(name) === 'Array')
 		for (var i = 0; i < name.length; i++)
 		{
-			if (realTypeOf(name[i]) != 'String')
+			if (realTypeOf(name[i]) !== 'String')
 				name[i] = name[i].toString();
 			LSResult[i] = localStorage.getItem(name[i]);
 		}
-	else if (isString == true)
+	else if (isString === true)
 		LSResult[0] = localStorage.getItem(name);
 
-	if (LSResult.length == 1)
+	if (LSResult.length === 1)
 		return LSResult[0];
 	else
 		return LSResult;
@@ -131,27 +130,27 @@ function getItemFromLS(name)
 *
 * @see <a href='http://www.w3.org/TR/webstorage/#the-localstorage-attribute'>W3C doc for Local Storage</a>
 *
-* @param name {String} || {Array&lt;String&gt;} : a string or an array of string which contains the Local Storage's name(s) to set
-* @param val {String} : the value to put in its element.
+* @param name {String} || {Array&lt;String&gt;}: a string or an array of string which contains the Local Storage's name(s) to set
+* @param val {String}: the value to put in its element.
 **/
 function setItemToLS(name, val, isJSON)
 {
-	if (realTypeOf(isJSON) == 'Boolean')
+	if (realTypeOf(isJSON) === 'Boolean')
 	{
-		if (realTypeOf(name) == 'Array' && realTypeOf(val) == 'Array' && val.length == name.length)
+		if (realTypeOf(name) === 'Array' && realTypeOf(val) === 'Array' && val.length === name.length)
 			for (var i = 0; i < name.length; i++)
 			{
 				if (null === val[i])
 					val[i] = '';
-				else if (realTypeOf(val[i]) != 'String')
+				else if (realTypeOf(val[i]) !== 'String')
 					val[i] = val[i].toString();
-				if (realTypeOf(name[i]) != 'String')
+				if (realTypeOf(name[i]) !== 'String')
 					name[i] = name[i].toString();
 				if (isJSON === true)
 					val[i] = JSON.stringify(val[i]);
 				localStorage.setItem(name[i], val[i]);
 			}
-		else if (realTypeOf(name) == 'Array' && realTypeOf(name[0]) == 'String' && realTypeOf(val) == 'String')
+		else if (realTypeOf(name) === 'Array' && realTypeOf(name[0]) === 'String' && realTypeOf(val) === 'String')
 		{
 			if (null === val)
 				val = '';
@@ -160,13 +159,13 @@ function setItemToLS(name, val, isJSON)
 
 			for (var i = 0; i < name.length; i++)
 			{
-				if (realTypeOf(name[i]) != 'String')
+				if (realTypeOf(name[i]) !== 'String')
 					name[i] = name[i].toString();
 
 				localStorage.setItem(name[i], val);
 			}
 		}
-		else if (realTypeOf(val) == 'String' && realTypeOf(name) == 'String')
+		else if (realTypeOf(val) === 'String' && realTypeOf(name) === 'String')
 		{
 			if (null === val)
 				val = '';
@@ -184,19 +183,19 @@ function setItemToLS(name, val, isJSON)
 *
 * @see <a href='http://www.w3.org/TR/webstorage/#the-localstorage-attribute'>W3C doc for Local Storage</a>
 *
-* @param name {String} || {Array&lt;String&gt;} : a string or an array of string which contains the Local Storage's name(s) to remove
+* @param name {String} || {Array&lt;String&gt;}: a string or an array of string which contains the Local Storage's name(s) to remove
 **/
 function removeItemFromLS(name)
 {
-	var isString = realTypeOf(name) == 'String';
-	if (realTypeOf(name) == 'Array')
+	var isString = realTypeOf(name) === 'String';
+	if (realTypeOf(name) === 'Array')
 		for (var i = 0; i < name.length; i++)
 		{
-			if (realTypeOf(name[i]) != 'String')
+			if (realTypeOf(name[i]) !== 'String')
 				name[i] = name[i].toString();
 			localStorage.removeItem(name[i]);
 		}
-	else if (isString == true)
+	else if (isString === true)
 		localStorage.removeItem(name);
 	else
 		throw new TypeError('name argument must be a string or an array of string');
@@ -207,28 +206,28 @@ function removeItemFromLS(name)
 *
 * @see <a href='http://www.w3.org/TR/webstorage/#the-sessionstorage-attribute'>W3C doc for Session Storage</a>
 *
-* @param name {String} || {Array&lt;String&gt;} : a string or an array of string which contains the Session Storage's name(s) to get
+* @param name {String} || {Array&lt;String&gt;}: a string or an array of string which contains the Session Storage's name(s) to get
 * @returns {String} || {Array&lt;String&gt;} a string or an array of string containing the string stored in the Session Storage. If the item <code>name</code> does not exists in the Local Storage, the result will be <code>null</code>.
 **/
 function getItemFromSS(name)
 {
-	var LSResult = new Array(), isString = realTypeOf(name) == 'String';
-	if (realTypeOf(name) == 'Array')
+	var LSResult = [], isString = realTypeOf(name) === 'String';
+	if (realTypeOf(name) === 'Array')
 	{
 		for (var i = 0; i < name.length; i++)
-			if (realTypeOf(name[i]) == 'String')
+			if (realTypeOf(name[i]) === 'String')
 				isString = true;
 		for (var i = 0; i < name.length; i++)
 			LSResult[i] = sessionStorage.getItem(name[i]);
 	}
-	else if (isString == true)
+	else if (isString === true)
 		LSResult[0] = sessionStorage.getItem(name);
 	else
 	{
 		console.log('Le type envoyé pour le paramètre d\'entrée n\'est pas correct !');
 		return;
 	}
-	if (LSResult.length == 1)
+	if (LSResult.length === 1)
 		return LSResult[0];
 	else
 		return LSResult;
@@ -239,27 +238,27 @@ function getItemFromSS(name)
 *
 * @see <a href='http://www.w3.org/TR/webstorage/#the-sessionstorage-attribute'>W3C doc for Session Storage</a>
 *
-* @param name {String} || {Array&lt;String&gt;} : a string or an array of string which contains the Session Storage's name(s) to set
-* @param val {String} : the value to put in its element.
+* @param name {String} || {Array&lt;String&gt;}: a string or an array of string which contains the Session Storage's name(s) to set
+* @param val {String}: the value to put in its element.
 **/
 function setItemToSS(name, val, isJSON)
 {
-	if (realTypeOf(isJSON) == 'Boolean')
+	if (realTypeOf(isJSON) === 'Boolean')
 	{
-		if (realTypeOf(name) == 'Array' && realTypeOf(val) == 'Array' && val.length == name.length)
+		if (realTypeOf(name) === 'Array' && realTypeOf(val) === 'Array' && val.length === name.length)
 			for (var i = 0; i < name.length; i++)
 			{
 				if (null === val[i])
 					val[i] = '';
-				else if (realTypeOf(val[i]) != 'String')
+				else if (realTypeOf(val[i]) !== 'String')
 					val[i] = val[i].toString();
-				if (realTypeOf(name[i]) != 'String')
+				if (realTypeOf(name[i]) !== 'String')
 					name[i] = name[i].toString();
 				if (isJSON === true)
 					val[i] = JSON.stringify(val[i]);
 				sessionStorage.setItem(name[i], val[i]);
 			}
-		else if (realTypeOf(name) == 'Array' && realTypeOf(name[0]) == 'String' && realTypeOf(val) == 'String')
+		else if (realTypeOf(name) === 'Array' && realTypeOf(name[0]) === 'String' && realTypeOf(val) === 'String')
 		{
 			if (null === val)
 				val = '';
@@ -268,13 +267,13 @@ function setItemToSS(name, val, isJSON)
 
 			for (var i = 0; i < name.length; i++)
 			{
-				if (realTypeOf(name[i]) != 'String')
+				if (realTypeOf(name[i]) !== 'String')
 					name[i] = name[i].toString();
 
 				sessionStorage.setItem(name[i], val);
 			}
 		}
-		else if (realTypeOf(val) == 'String' && realTypeOf(name) == 'String')
+		else if (realTypeOf(val) === 'String' && realTypeOf(name) === 'String')
 		{
 			if (null === val)
 				val = '';
@@ -292,19 +291,19 @@ function setItemToSS(name, val, isJSON)
 *
 * @see <a href='http://www.w3.org/TR/webstorage/#the-sessionstorage-attribute'>W3C doc for Session Storage</a>
 *
-* @param name {String} || {Array&lt;String&gt;} : a string or an array of string which contains the Session Storage's name(s) to remove
+* @param name {String} || {Array&lt;String&gt;}: a string or an array of string which contains the Session Storage's name(s) to remove
 **/
 function removeItemFromSS(name)
 {
-	var isString = realTypeOf(name) == 'String';
-	if (realTypeOf(name) == 'Array')
+	var isString = realTypeOf(name) === 'String';
+	if (realTypeOf(name) === 'Array')
 		for (var i = 0; i < name.length; i++)
 		{
-			if (realTypeOf(name[i]) != 'String')
+			if (realTypeOf(name[i]) !== 'String')
 				name[i] = name[i].toString();
 			sessionStorage.removeItem(name[i]);
 		}
-	else if (isString == true)
+	else if (isString === true)
 		sessionStorage.removeItem(name);
 	else
 		throw new TypeError('name argument must be a string, or an array of string !');
@@ -314,7 +313,7 @@ function removeItemFromSS(name)
 *
 * Function to translate a day number into its french day name
 *
-* @param int {Number} : an int between 1 & 7 which indicate a day of a week
+* @param int {Number}: an int between 1 & 7 which indicate a day of a week
 * @returns {String} the french day name
 **/
 function getFrDayName(int)
@@ -354,14 +353,10 @@ function stringifyDateFr(date)
 	if (null === date)
 	{
 		date = new Date();
-		return getFrDayName(date.getDay()) + ' ' + (date.getDate() < 10 ? '0' + date.getDate().toString() : date.getDate().toString()) + '-' + (date.getMonth() < 10 ? '0' + date.getMonth().toString() : date.getMonth().toString()) + '-' + date.getFullYear().toString() + ' ' + (date.getHours() < 10 ? '0' + date.getHours().toString() : date.getHours().toString()) + ':'
-				+ (date.getMinutes() < 10 ? '0' + date.getMinutes().toString() : date.getMinutes().toString()) + ':' + (date.getSeconds() < 10 ? '0' + date.getSeconds().toString() : date.getSeconds().toString()) + ':'
-				+ (date.getMilliseconds() < 10 ? '00' + date.getMilliseconds().toString() : date.getMilliseconds() < 100 ? '00' + date.getMilliseconds().toString() : date.getMilliseconds().toString());
+		return getFrDayName(date.getDay()) + ' ' + (date.getDate() < 10 ? '0' + date.getDate().toString() : date.getDate().toString()) + '-' + (date.getMonth() < 10 ? '0' + date.getMonth().toString() : date.getMonth().toString()) + '-' + date.getFullYear().toString() + ' ' + (date.getHours() < 10 ? '0' + date.getHours().toString() : date.getHours().toString()) + ':' + (date.getMinutes() < 10 ? '0' + date.getMinutes().toString() : date.getMinutes().toString()) + ':' + (date.getSeconds() < 10 ? '0' + date.getSeconds().toString() : date.getSeconds().toString()) + ':' + (date.getMilliseconds() < 10 ? '00' + date.getMilliseconds().toString() : date.getMilliseconds() < 100 ? '00' + date.getMilliseconds().toString() : date.getMilliseconds().toString());
 	}
-	else if (realTypeOf(date) == 'Date')
-		return getFrDayName(date.getDay()) + ' ' + (date.getDate() < 10 ? '0' + date.getDate().toString() : date.getDate().toString()) + '-' + (date.getMonth() < 10 ? '0' + date.getMonth().toString() : date.getMonth().toString()) + '-' + date.getFullYear().toString() + ' ' + (date.getHours() < 10 ? '0' + date.getHours().toString() : date.getHours().toString()) + ':'
-				+ (date.getMinutes() < 10 ? '0' + date.getMinutes().toString() : date.getMinutes().toString()) + ':' + (date.getSeconds() < 10 ? '0' + date.getSeconds().toString() : date.getSeconds().toString()) + ':'
-				+ (date.getMilliseconds() < 10 ? '00' + date.getMilliseconds().toString() : date.getMilliseconds() < 100 ? '00' + date.getMilliseconds().toString() : date.getMilliseconds().toString());
+	else if (realTypeOf(date) === 'Date')
+		return getFrDayName(date.getDay()) + ' ' + (date.getDate() < 10 ? '0' + date.getDate().toString() : date.getDate().toString()) + '-' + (date.getMonth() < 10 ? '0' + date.getMonth().toString() : date.getMonth().toString()) + '-' + date.getFullYear().toString() + ' ' + (date.getHours() < 10 ? '0' + date.getHours().toString() : date.getHours().toString()) + ':' + (date.getMinutes() < 10 ? '0' + date.getMinutes().toString() : date.getMinutes().toString()) + ':' + (date.getSeconds() < 10 ? '0' + date.getSeconds().toString() : date.getSeconds().toString()) + ':' + (date.getMilliseconds() < 10 ? '00' + date.getMilliseconds().toString() : date.getMilliseconds() < 100 ? '00' + date.getMilliseconds().toString() : date.getMilliseconds().toString());
 	else
 		throw new TypeError('The argument must be a Date, or set to null');
 }
@@ -392,7 +387,7 @@ function execute(node)
 /**
 * A function that return a boolean indicating if the user browser if IE <= 8.
 * 
-* @returns {Boolean} : <code>true</code> if the browser is IE 9 or older version, or another browser; <code>false</code> otherwise  
+* @returns {Boolean}: <code>true</code> if the browser is IE 9 or older version, or another browser; <code>false</code> otherwise  
 **/
 function isIE9Plus()
 {
@@ -403,11 +398,9 @@ function isIE9Plus()
 /**
 * Function to use for searching if a particular node has or not a parent node named by the given value.
 * 
-* @param startingNode
-* 					{Node} : the node for which one you need to know if it has a parent of the searched type.
-* @param parentNodeName
-* 					  {String} : the name of the parent element to search.
-* @return {Boolean} : a <code>boolean</code> which indicate if yes or no the starting node has a parent named by the value given in <code>parentNodeName</code>
+* @param startingNode {Node}: the node for which one you need to know if it has a parent of the searched type.
+* @param parentNodeName {String}: the name of the parent element to search.
+* @return {Boolean}: a <code>boolean</code> which indicate if yes or no the starting node has a parent named by the value given in <code>parentNodeName</code>
 **/
 function hasSpecifiedNodeParent(startingNode, parentNodeName)
 {
@@ -423,11 +416,31 @@ function hasSpecifiedNodeParent(startingNode, parentNodeName)
 	return null !== node;
 }
 
+function defineConstantForObject(object, constName, value, enumerable, configurable)
+{
+	if ('String' === realTypeOf(constName))
+		Object.defineProperty(object, constName,
+		{
+			value : value,
+			writable : false,
+			enumerable : ('Boolean' === realTypeOf(enumerable)) ? enumerable : true,
+			configurable : ('Boolean' === realTypeOf(configurable)) ? configurable : true
+		});
+	else
+		throw new TypeError('constName must be an String !');
+}
+/**
+* Versions:
+* - 1.0.0: initial version
+* - 1.1.0: add LocalStorage functions, float and int test functions && IE 9 plus test function
+* - 1.2.0: add constant creator for objects
+**/
 var utils =
 {
 	realTypeOf : realTypeOf,
 	isDefined : isDefined,
 	isInt : isInt,
+	isFloat : isFloat,
 	typeVerificator : typeVerificator,
 	LSDefinied : LSDefinied,
 	getItemFromLS : getItemFromLS,
@@ -439,8 +452,10 @@ var utils =
 	getFrDayName : getFrDayName,
 	stringifyDateFr : stringifyDateFr,
 	isIE9Plus : isIE9Plus,
-	hasSpecifiedNodeParent : hasSpecifiedNodeParent
-}
+	hasSpecifiedNodeParent : hasSpecifiedNodeParent,
+	defineConstantForObject : defineConstantForObject,
+	version : defineConstantForObject(this, 'version', '1.2.0')
+};
 
-if (isDefined(require) && isDefined(module) && isDefined(module.exports))
+if (require && exports && module.exports)
 	module.exports = utils;
