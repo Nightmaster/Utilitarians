@@ -1,3 +1,13 @@
+/*!
+* Utilitarians - Tools for different languages and situations.
+* This version can be used as a Node.js module
+*
+* @description Tools for JavaScript
+* @version     1.2.1
+* @author      Gaël BLAISE
+* @license     Mozilla Public License, version 2.0
+!*/
+
 /**
 * Function useful to know what is the real type of an object.
 * 
@@ -429,11 +439,13 @@ function defineConstantForObject(object, constName, value, enumerable, configura
 	else
 		throw new TypeError('constName must be an String !');
 }
+
 /**
 * Versions:
 * - 1.0.0: initial version
 * - 1.1.0: add LocalStorage functions, float and int test functions && IE 9 plus test function
 * - 1.2.0: add constant creator for objects
+* - 1.2.1: correct version declaration, add minify constant and informations on this file
 **/
 var utils =
 {
@@ -453,9 +465,10 @@ var utils =
 	stringifyDateFr : stringifyDateFr,
 	isIE9Plus : isIE9Plus,
 	hasSpecifiedNodeParent : hasSpecifiedNodeParent,
-	defineConstantForObject : defineConstantForObject,
-	version : defineConstantForObject(this, 'version', '1.2.0')
+	defineConstantForObject : defineConstantForObject
 };
+defineConstantForObject(utils, 'version', '1.2.1');
+defineConstantForObject(utils, 'minify', false);
 
 if (require && exports && module.exports)
 	module.exports = utils;
