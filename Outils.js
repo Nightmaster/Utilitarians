@@ -323,14 +323,14 @@ function removeItemFromSS(name)
 *
 * Function to translate a day number into its french day name
 *
-* @param int {Number}: an int between 1 & 7 which indicate a day of a week
+* @param dayAsInt {Number}: an int between 1 & 7 which indicate a day of a week
 * @returns {String} the french day name
 **/
-function getFrDayName(int)
+function getFrDayName(dayAsInt)
 {
-	if ( !isInt(int))
+	if ( !isInt(dayAsInt))
 		throw new TypeError('The arguement must be an integer between 1 and 7');
-	switch (int)
+	switch (dayAsInt)
 	{
 		case 1:
 			return 'Lundi';
@@ -470,5 +470,9 @@ var utils =
 defineConstantForObject(utils, 'version', '1.2.1');
 defineConstantForObject(utils, 'minify', false);
 
-if (require && exports && module.exports)
+try
+{
 	module.exports = utils;
+}
+catch(e)
+{}
