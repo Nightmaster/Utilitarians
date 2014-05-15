@@ -3,7 +3,7 @@
 * This version can be used as a Node.js module
 *
 * @description Tools for JavaScript
-* @version     1.2.1
+* @version     1.2.2
 * @author      Gaël BLAISE
 * @license     Mozilla Public License, version 2.0
 !*/
@@ -446,6 +446,7 @@ function defineConstantForObject(object, constName, value, enumerable, configura
 * - 1.1.0: add LocalStorage functions, float and int test functions && IE 9 plus test function
 * - 1.2.0: add constant creator for objects
 * - 1.2.1: correct version declaration, add minify constant and informations on this file
+* - 1.2.2: surround exports part with try/catch, replace the incorrect "int" parameter for "getDayFr" function
 **/
 var utils =
 {
@@ -467,7 +468,7 @@ var utils =
 	hasSpecifiedNodeParent : hasSpecifiedNodeParent,
 	defineConstantForObject : defineConstantForObject
 };
-defineConstantForObject(utils, 'version', '1.2.1');
+defineConstantForObject(utils, 'version', '1.2.2');
 defineConstantForObject(utils, 'minify', false);
 
 try
