@@ -1,11 +1,11 @@
 /*!
-* Utilitarians - Tools for different languages and situations.
-* This version can be used as a Node.js module
-*
-* @description Tools for JavaScript
-* @version     1.2.2
-* @author      Gaël BLAISE
-* @license     Mozilla Public License, version 2.0
+ * Utilitarians - Tools for different languages and situations.
+ * This version can be used as a Node.js module
+ *
+ * @description Tools for JavaScript
+ * @version     1.3.0
+ * @author      Gaël BLAISE
+ * @license     Mozilla Public License, version 2.0
 !*/
 
 /**
@@ -59,7 +59,7 @@ function isDefined(value, strict)
 function isInt(val)
 {
 	return parseFloat(val) === parseInt(val) && !isNaN(parseInt(val));
-};
+}
 
 /**
 * A function useful to check if the element in entry is an integer
@@ -374,8 +374,7 @@ function stringifyDateFr(date)
 /**
 * the function used to visit each node of a DOM organized document (like XML and/or HTML).
 * 
-* @param parentNode :
-* 					the "master" node from which you start the children's visit
+* @param parentNode : the "master" node from which you start the children's visit
 **/
 function visitRecursively(actual)
 {
@@ -386,7 +385,7 @@ function visitRecursively(actual)
 
 	for (var i = 0; i < children.length; i++)
 		// visit child node
-		visitRecursively(children[i])
+		visitRecursively(children[i]);
 }
 
 function execute(node)
@@ -403,7 +402,7 @@ function isIE9Plus()
 {
 	var myNav = navigator.userAgent.toLowerCase();
 	return -1 === myNav.indexOf('msie') ? true : 8 > parseInt(myNav.split('msie')[1]) ? false : true; // if
-};
+}
 
 /**
 * Function to use for searching if a particular node has or not a parent node named by the given value.
@@ -426,6 +425,15 @@ function hasSpecifiedNodeParent(startingNode, parentNodeName)
 	return null !== node;
 }
 
+/**
+* Define a constant for the given object
+*
+* @param object {Object}: the object who will have the constant
+* @param constName {String}: the name for the constant
+* @param value {Object}: the constant to add to the object
+* @param enumerable {Boolean}: boolean that indicate if the constant is or not enumerable
+* @param configurable {Boolean}: boolean that indicate if the constant is or not configurable
+**/
 function defineConstantForObject(object, constName, value, enumerable, configurable)
 {
 	if ('String' === realTypeOf(constName))
@@ -441,12 +449,52 @@ function defineConstantForObject(object, constName, value, enumerable, configura
 }
 
 /**
+* Check if IP value is correct
+*
+* @param ip {String}: the IP to check
+* @return {Boolean} a boolean indicating if the entry is a correct IP value or not
+**/
+function ipValidation(ip)
+{
+	if ('localhost' !== ip)
+	{
+		var part;
+		if ('String' === utils.realTypeOf(ip))
+			part = ip.split('.');
+		else
+			return false;
+		if (4 !== part.length)
+			return false;
+		for (var i = 0; i < part.length; i++)
+			if (0 > parseInt(part[i]) || 255 < parseInt(part[i]) || isNaN(parseInt(part[i])) || false === isDefined(part[i]))
+				return false;
+		return true;
+	}
+}
+
+/**
+* Check if port value is correct in the correct range
+*
+* @param port {String} || {int}: the value to check
+* @return {Boolean} a boolean indicating if the value is in the correct port's range or not
+**/
+function portValidation(port)
+{
+	if (isNaN(parseInt(port)) || parseInt(port) !== parseFloat(port))
+		return false;
+	else if (0 > parseInt(port) || 65535 <= parseInt(port))
+		return false;
+	return true;
+}
+
+/**
 * Versions:
 * - 1.0.0: initial version
 * - 1.1.0: add LocalStorage functions, float and int test functions && IE 9 plus test function
 * - 1.2.0: add constant creator for objects
 * - 1.2.1: correct version declaration, add minify constant and informations on this file
 * - 1.2.2: surround exports part with try/catch, replace the incorrect "int" parameter for "getDayFr" function
+* - 1.3.0: add ipValidation and portValidation functions, and made some few corrections
 **/
 var utils =
 {
@@ -466,14 +514,16 @@ var utils =
 	stringifyDateFr : stringifyDateFr,
 	isIE9Plus : isIE9Plus,
 	hasSpecifiedNodeParent : hasSpecifiedNodeParent,
-	defineConstantForObject : defineConstantForObject
+	defineConstantForObject : defineConstantForObject,
+	ipValidation : ipValidation,
+	portValidation : portValidation
 };
-defineConstantForObject(utils, 'version', '1.2.2');
+defineConstantForObject(utils, 'version', '1.3.0');
 defineConstantForObject(utils, 'minify', false);
 
 try
 {
 	module.exports = utils;
 }
-catch(e)
+catch (e)
 {}
