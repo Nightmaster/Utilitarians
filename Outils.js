@@ -470,6 +470,8 @@ function ipValidation(ip)
 				return false;
 		return true;
 	}
+	else
+		return true;
 }
 
 /**
